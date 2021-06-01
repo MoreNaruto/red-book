@@ -12,7 +12,7 @@ func StartDB() (db *sql.DB) {
 	if err != nil {
 		panic(err.Error())
 	}
-	db, err := sql.Open(config.DBDriver, config.DBSource)
+	db, err = sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		panic(err.Error())
 	}
