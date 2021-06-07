@@ -1,27 +1,33 @@
 package database
 
 import (
-	"cmd/main/util"
 	"database/sql"
+	"log"
+	"redbook/util"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func StartDB() (db *sql.DB) {
+func StartDB() (*sql.DB, error) {
 	config, err := util.LoadConfig("../../config/app.env")
 	if err != nil {
-		panic(err.Error())
+		log.Printf("Error %s when trying to access config\n", err)
+		return nil, err
 	}
-	db, err = sql.Open(config.DBDriver, config.DBSource)
+	db, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
-		panic(err.Error())
+		log.Printf("Error %s when opening DB\n", err)
+		return nil, err
 	}
-	defer db.Close()
+
+	db.SetMaxOpenConns(20)
+	db.SetMaxIdleConns(20)
 
 	err = db.Ping()
 	if err != nil {
-		panic(err.Error())
+		log.Printf("Error %s when pinging DB\n", err)
+		return nil, err
 	}
 
-	return db
+	return db, nil
 }

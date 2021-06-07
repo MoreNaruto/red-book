@@ -13,10 +13,6 @@ func CreateUser() {
 	elliot := &User{
 		Username: "elliotName",
 		Age:      22,
-		SocialFollowers: &SocialFollowers{
-			Twitter: 1200,
-			Youtube: 2300,
-		},
 	}
 
 	data, err := proto.Marshal(elliot)
@@ -34,6 +30,4 @@ func CreateUser() {
 
 	fmt.Println(newElliot.GetAge())
 	fmt.Println(newElliot.GetUsername())
-	fmt.Println(newElliot.GetSocialFollowers().GetTwitter())
-	fmt.Println(newElliot.GetSocialFollowers().GetYoutube())
 }

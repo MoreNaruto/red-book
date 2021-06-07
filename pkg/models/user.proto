@@ -1,0 +1,14 @@
+syntax = "proto3";
+package models;
+option go_package = "/pkg/models";
+import "google/protobuf/timestamp.proto";
+
+message User {
+    int64 id = 1;
+    string username = 2;
+    string password = 3;
+    google.protobuf.Timestamp birthday = 4;
+    string email = 5;
+    google.protobuf.Timestamp created_at = 6;
+    google.protobuf.Timestamp last_updated = 7;
+}
