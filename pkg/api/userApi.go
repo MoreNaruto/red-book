@@ -1,27 +1,24 @@
 package api
 
 import (
-	"database/sql"
 	"log"
 	"redbook/internal/pkg/encryption"
 	"redbook/pkg/models"
 
 	_ "github.com/go-sql-driver/mysql"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type UserApi struct {
-	db *sql.DB
-}
-
-func (d *UserApi) CreateUser(u *models.User) (int64, error) {
-	insertStatement := "INSERT INTO users(username, password, birthday, email) VALUES($1, $2, $3, $4)"
-	statement, err := d.db.Prepare(insertStatement)
+func CreateUser(u *models.User) (int64, error) {
+	insertStatement := "INSERT INTO users(username, password, birthday, email, created_at, last_updated) VALUES(?, ?, ?, ?, ?, ?)"
+	statement, err := dbmap.Prepare(insertStatement)
 	if err != nil {
 		log.Fatal(err)
 		return 0, err
 	}
+	defer statement.Close()
 	hashPassword := encryption.HashAndSalt([]byte(u.GetPassword()))
-	result, err := statement.Exec(insertStatement, u.GetUsername(), hashPassword, u.GetBirthday(), u.GetEmail())
+	result, err := statement.Exec(u.GetUsername(), hashPassword, u.GetBirthday().AsTime(), u.GetEmail(), timestamppb.Now().AsTime(), timestamppb.Now().AsTime())
 	if err != nil {
 		log.Fatal(err)
 		return 0, err
@@ -40,9 +37,9 @@ func (d *UserApi) CreateUser(u *models.User) (int64, error) {
 	return lastId, err
 }
 
-func (d *UserApi) DeleteUser(u int32) error {
+func DeleteUser(u int32) error {
 	return nil
 }
-func (d *UserApi) GetUser(u int32) (*models.User, error) {
+func GetUser(u int32) (*models.User, error) {
 	return nil, nil
 }

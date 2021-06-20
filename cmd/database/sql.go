@@ -8,16 +8,18 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func StartDB() (*sql.DB, error) {
-	config, err := util.LoadConfig("../../config/app.env")
+func StartDB() *sql.DB {
+	config, err := util.LoadConfig("./config")
 	if err != nil {
 		log.Printf("Error %s when trying to access config\n", err)
-		return nil, err
+		panic(err)
 	}
+
 	db, err := sql.Open(config.DBDriver, config.DBSource)
+
 	if err != nil {
 		log.Printf("Error %s when opening DB\n", err)
-		return nil, err
+		panic(err)
 	}
 
 	db.SetMaxOpenConns(20)
@@ -26,8 +28,8 @@ func StartDB() (*sql.DB, error) {
 	err = db.Ping()
 	if err != nil {
 		log.Printf("Error %s when pinging DB\n", err)
-		return nil, err
+		panic(err)
 	}
 
-	return db, nil
+	return db
 }
